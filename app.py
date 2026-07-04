@@ -4,6 +4,7 @@ import os
 from utils.pdf_reader import extract_text
 from utils.ats import calculate_ats_score
 from utils.pdf_report import create_pdf_report
+from utils.ai_suggestions import generate_suggestions
 
 app = Flask(__name__)
 
@@ -51,6 +52,9 @@ def upload():
         job_description
     )
 
+    # Generate AI Suggestions
+    suggestions = generate_suggestions(missing)
+
     # Generate PDF Report
     report_path = os.path.join(
         app.config["UPLOAD_FOLDER"],
@@ -69,6 +73,7 @@ def upload():
         score=score,
         matched=sorted(matched),
         missing=sorted(missing),
+        suggestions=suggestions,
         report_path="ATS_Report.pdf"
     )
 
