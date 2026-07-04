@@ -6,8 +6,12 @@ from utils.ats import calculate_ats_score
 
 app = Flask(__name__)
 
+# Upload folder configuration
 UPLOAD_FOLDER = "uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+
+# Create uploads folder if it doesn't exist
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 @app.route("/")
@@ -26,12 +30,12 @@ def upload():
     if resume.filename == "":
         return "No file selected."
 
+    # Save uploaded file
     file_path = os.path.join(
         app.config["UPLOAD_FOLDER"],
         resume.filename
     )
 
-    # Save uploaded file
     resume.save(file_path)
 
     # Extract text from PDF
