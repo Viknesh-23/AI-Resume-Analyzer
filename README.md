@@ -2,7 +2,9 @@
 
 An AI-powered Resume Analyzer built using **Python, Flask, Bootstrap, and Google Gemini AI**. It compares a resume with a Job Description (JD), calculates an ATS score, identifies matched and missing skills, and generates AI-powered resume improvement suggestions.
 
----
+## 🌐 Live Demo
+
+https://ai-resume-analyzer-rqan.onrender.com
 
 ## 🚀 Features
 
