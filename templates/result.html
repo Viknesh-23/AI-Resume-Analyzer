@@ -2,11 +2,13 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATS Result</title>
 
-    <!-- Bootstrap CSS -->
+    <title>ATS Analysis Result</title>
+
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Chart.js -->
@@ -14,262 +16,408 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+
+        body.dark-mode{
+            background:#121212;
+            color:white;
+        }
+
+        body.dark-mode .card{
+            background:#1f1f1f;
+            color:white;
+        }
+
+        body.dark-mode .list-group-item{
+            background:#2d2d2d;
+            color:white;
+            border-color:#444;
+        }
+
+        body.dark-mode .progress{
+            background:#444;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4{
+            color:#4dabff !important;
+        }
+
+        .dark-toggle{
+            position:fixed;
+            top:20px;
+            right:20px;
+            z-index:999;
+        }
+
+    </style>
+
 </head>
 
 <body>
 
+<button
+    class="btn btn-dark dark-toggle"
+    id="darkModeBtn">
+
+    🌙 Dark Mode
+
+</button>
+
 <div class="container py-5">
 
-    <div class="card shadow-lg p-5 rounded-4">
+<div class="card shadow-lg rounded-4 p-5">
 
-        <h1 class="text-center text-primary mb-4">
-            📊 ATS Analysis Result
-        </h1>
+<h1 class="text-center text-primary mb-5">
 
-        <!-- ATS Score -->
-        <h3 class="mb-3">ATS Score</h3>
+📊 ATS Analysis Result
 
-        <div class="progress mb-5" style="height:35px;">
+</h1>
 
-            <div
-                class="progress-bar bg-success"
-                role="progressbar"
-                style="width: {{ score }}%;"
-                aria-valuenow="{{ score }}"
-                aria-valuemin="0"
-                aria-valuemax="100">
+<!-- ATS SCORE -->
 
-                {{ score }}%
+<h3 class="mb-3">
 
-            </div>
+ATS Score
 
-        </div>
+</h3>
 
-        <!-- Matched & Missing Skills -->
-        <div class="row">
+<div class="progress mb-5" style="height:40px;">
 
-            <div class="col-md-6">
+<div
+class="progress-bar bg-success"
+role="progressbar"
+style="width:{{ score }}%;"
+aria-valuenow="{{ score }}"
+aria-valuemin="0"
+aria-valuemax="100">
 
-                <h4 class="text-success mb-3">
-                    ✅ Matched Skills
-                </h4>
-
-                <ul class="list-group">
-
-                    {% for skill in matched %}
-
-                    <li class="list-group-item">
-                        {{ skill }}
-                    </li>
-
-                    {% endfor %}
-
-                </ul>
-
-            </div>
-
-            <div class="col-md-6">
-
-                <h4 class="text-danger mb-3">
-                    ❌ Missing Skills
-                </h4>
-
-                <ul class="list-group">
-
-                    {% for skill in missing %}
-
-                    <li class="list-group-item">
-                        {{ skill }}
-                    </li>
-
-                    {% endfor %}
-
-                </ul>
-
-            </div>
-
-        </div>
-
-        <!-- Pie Chart -->
-        <div class="mt-5">
-
-            <h3 class="text-primary mb-3">
-                📊 ATS Skill Distribution
-            </h3>
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <canvas id="atsChart"></canvas>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Bar Chart -->
-        <div class="mt-5">
-
-            <h3 class="text-primary mb-3">
-                📈 Skill Match Comparison
-            </h3>
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <canvas id="barChart"></canvas>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- AI Suggestions -->
-        <div class="mt-5">
-
-            <h3 class="text-primary mb-3">
-                🤖 AI Resume Suggestions
-            </h3>
-
-            <div class="card border-primary shadow-sm">
-
-                <div class="card-body">
-
-                    <ul class="list-group list-group-flush">
-
-                        {% for suggestion in suggestions %}
-
-                        <li class="list-group-item">
-                            💡 {{ suggestion }}
-                        </li>
-
-                        {% endfor %}
-
-                    </ul>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Resume Preview -->
-        <div class="mt-5">
-
-            <h3 class="text-primary mb-3">
-                📄 Resume Preview
-            </h3>
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <iframe
-                        src="{{ url_for('uploaded_file', filename=resume_file) }}"
-                        width="100%"
-                        height="700px"
-                        style="border:none;">
-                    </iframe>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Buttons -->
-        <div class="text-center mt-5">
-
-            <a href="/download/{{ report_path }}" class="btn btn-success btn-lg me-3">
-                📄 Download ATS PDF Report
-            </a>
-
-            <a href="/" class="btn btn-primary btn-lg">
-                Analyze Another Resume
-            </a>
-
-        </div>
-
-    </div>
+{{ score }}%
 
 </div>
 
-<!-- Bootstrap JS -->
+</div>
+
+<!-- MATCHED / MISSING -->
+
+<div class="row align-items-stretch">
+
+<div class="col-md-6 d-flex">
+
+<div class="w-100">
+
+<h4 class="text-success mb-3">
+
+✅ Matched Skills
+
+</h4>
+
+<ul class="list-group w-100">
+
+{% for skill in matched %}
+
+<li class="list-group-item">
+
+{{ skill }}
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+</div>
+
+<div class="col-md-6 d-flex">
+
+<div class="w-100">
+
+<h4 class="text-danger mb-3">
+
+❌ Missing Skills
+
+</h4>
+
+<ul class="list-group w-100">
+
+{% for skill in missing %}
+
+<li class="list-group-item">
+
+{{ skill }}
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- PIE CHART -->
+
+<div class="mt-5">
+
+<h3 class="text-primary mb-3">
+
+📊 ATS Skill Distribution
+
+</h3>
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<canvas id="atsChart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- BAR CHART -->
+
+<div class="mt-5">
+
+<h3 class="text-primary mb-3">
+
+📈 Skill Match Comparison
+
+</h3>
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<canvas id="barChart"></canvas>
+
+</div>
+
+</div>
+
+</div>
+<!-- AI Suggestions -->
+
+<div class="mt-5">
+
+<h3 class="text-primary mb-3">
+
+🤖 AI Resume Suggestions
+
+</h3>
+
+<div class="card border-primary shadow-sm">
+
+<div class="card-body">
+
+<ul class="list-group list-group-flush">
+
+{% for suggestion in suggestions %}
+
+<li class="list-group-item">
+
+💡 {{ suggestion }}
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Resume Preview -->
+
+<div class="mt-5">
+
+<h3 class="text-primary mb-3">
+
+📄 Resume Preview
+
+</h3>
+
+<div class="card shadow-sm">
+
+<div class="card-body">
+
+<iframe
+src="{{ url_for('uploaded_file', filename=resume_file) }}"
+width="100%"
+height="700"
+style="border:none;">
+
+</iframe>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Buttons -->
+
+<div class="text-center mt-5">
+
+<a
+href="/download/{{ report_path }}"
+class="btn btn-success btn-lg me-3">
+
+📄 Download ATS PDF Report
+
+</a>
+
+<a
+href="/"
+class="btn btn-primary btn-lg">
+
+🔄 Analyze Another Resume
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- Bootstrap -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Charts -->
 <script>
 
 const matchedCount = {{ matched|length }};
 const missingCount = {{ missing|length }};
 
-// Pie Chart
-new Chart(document.getElementById("atsChart"), {
+new Chart(document.getElementById("atsChart"),{
 
-    type: "pie",
+type:"pie",
 
-    data: {
+data:{
 
-        labels: ["Matched Skills", "Missing Skills"],
+labels:[
+"Matched Skills",
+"Missing Skills"
+],
 
-        datasets: [{
+datasets:[{
 
-            data: [matchedCount, missingCount],
+data:[
+matchedCount,
+missingCount
+],
 
-            backgroundColor: [
-                "#28a745",
-                "#dc3545"
-            ]
+backgroundColor:[
+"#28a745",
+"#dc3545"
+]
 
-        }]
+}]
 
-    }
+}
 
 });
 
-// Bar Chart
-new Chart(document.getElementById("barChart"), {
+new Chart(document.getElementById("barChart"),{
 
-    type: "bar",
+type:"bar",
 
-    data: {
+data:{
 
-        labels: ["Matched Skills", "Missing Skills"],
+labels:[
+"Matched Skills",
+"Missing Skills"
+],
 
-        datasets: [{
+datasets:[{
 
-            label: "Skills",
+label:"Skills",
 
-            data: [matchedCount, missingCount],
+data:[
+matchedCount,
+missingCount
+],
 
-            backgroundColor: [
-                "#28a745",
-                "#dc3545"
-            ]
+backgroundColor:[
+"#28a745",
+"#dc3545"
+]
 
-        }]
+}]
 
-    },
+},
 
-    options: {
+options:{
 
-        responsive: true,
+responsive:true,
 
-        scales: {
+plugins:{
 
-            y: {
+legend:{
+display:false
+}
 
-                beginAtZero: true
+},
 
-            }
+scales:{
 
-        }
+y:{
 
-    }
+beginAtZero:true
+
+}
+
+}
+
+}
+
+});
+
+</script>
+
+<script>
+
+const darkBtn=document.getElementById("darkModeBtn");
+
+if(localStorage.getItem("theme")==="dark"){
+
+document.body.classList.add("dark-mode");
+
+darkBtn.innerHTML="☀️ Light Mode";
+
+}
+
+darkBtn.addEventListener("click",()=>{
+
+document.body.classList.toggle("dark-mode");
+
+if(document.body.classList.contains("dark-mode")){
+
+localStorage.setItem("theme","dark");
+
+darkBtn.innerHTML="☀️ Light Mode";
+
+}else{
+
+localStorage.setItem("theme","light");
+
+darkBtn.innerHTML="🌙 Dark Mode";
+
+}
 
 });
 

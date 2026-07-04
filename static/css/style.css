@@ -1,29 +1,123 @@
+/* ===========================
+   Global Styles
+=========================== */
+
 body{
     background:#f4f7fc;
     font-family:Arial, Helvetica, sans-serif;
+    transition:background .4s ease,color .4s ease;
 }
 
 .card{
-    max-width:800px;
+    max-width:1200px;
     margin:auto;
+    border-radius:20px;
+    transition:all .35s ease;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 15px 35px rgba(0,0,0,.18);
 }
 
 textarea{
     resize:none;
 }
 
-.btn{
-    font-weight:bold;
-}
-
-h1{
-    letter-spacing:1px;
-}
-
 .form-control{
     border-radius:10px;
 }
 
-.btn-primary{
-    border-radius:10px;
+/* ===========================
+   Headings
+=========================== */
+
+h1{
+    font-size:3rem;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+h3{
+    font-weight:600;
+}
+
+/* ===========================
+   Buttons
+=========================== */
+
+.btn{
+    font-weight:600;
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+
+.btn-primary,
+.btn-success,
+.btn-dark{
+    border-radius:12px;
+    padding:12px 24px;
+}
+
+/* ===========================
+   Progress Bar
+=========================== */
+
+.progress{
+    border-radius:20px;
+}
+
+.progress-bar{
+    border-radius:20px;
+    transition:width 1s ease;
+}
+
+/* ===========================
+   List Group
+=========================== */
+
+.list-group-item{
+    padding:15px;
+    transition:.25s;
+}
+
+.list-group-item:hover{
+    background:#f1f8ff;
+}
+
+body.dark-mode .list-group-item:hover{
+    background:#3b3b3b;
+}
+
+/* ===========================
+   Resume Preview
+=========================== */
+
+iframe{
+    border-radius:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,.20);
+}
+
+/* ===========================
+   Responsive Design
+=========================== */
+
+@media (max-width:768px){
+
+    .card{
+        max-width:95%;
+        padding:20px !important;
+    }
+
+    h1{
+        font-size:2rem;
+    }
+
+    iframe{
+        height:500px;
+    }
+
 }

@@ -4,11 +4,11 @@ import os
 from utils.pdf_reader import extract_text
 from utils.ats import calculate_ats_score
 from utils.pdf_report import create_pdf_report
-from utils.ai_suggestions import generate_suggestions
+from utils.gemini_ai import generate_ai_suggestions
 
 app = Flask(__name__)
 
-# Upload folder configuration
+# Upload Folder
 UPLOAD_FOLDER = "uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
@@ -24,6 +24,7 @@ def home():
 @app.route("/upload", methods=["POST"])
 def upload():
 
+    # Check whether a resume was uploaded
     if "resume" not in request.files:
         return "No file uploaded."
 
@@ -32,7 +33,7 @@ def upload():
     if resume.filename == "":
         return "No file selected."
 
-    # Save uploaded file
+    # Save uploaded resume
     file_path = os.path.join(
         app.config["UPLOAD_FOLDER"],
         resume.filename
@@ -40,11 +41,14 @@ def upload():
 
     resume.save(file_path)
 
-    # Extract text from PDF
+    # Extract resume text
     resume_text = extract_text(file_path)
 
     # Get Job Description
-    job_description = request.form.get("job_description", "")
+    job_description = request.form.get(
+        "job_description",
+        ""
+    )
 
     # Calculate ATS Score
     score, matched, missing = calculate_ats_score(
@@ -52,10 +56,13 @@ def upload():
         job_description
     )
 
-    # Generate AI Suggestions
-    suggestions = generate_suggestions(missing)
+    # Generate Gemini AI Suggestions
+    suggestions = generate_ai_suggestions(
+        resume_text,
+        job_description
+    )
 
-    # Generate PDF Report
+    # Create PDF Report
     report_path = os.path.join(
         app.config["UPLOAD_FOLDER"],
         "ATS_Report.pdf"
@@ -68,6 +75,7 @@ def upload():
         missing
     )
 
+    # Show Result Page
     return render_template(
         "result.html",
         score=score,
@@ -79,9 +87,10 @@ def upload():
     )
 
 
-# Resume Preview Route
+# Resume Preview
 @app.route("/uploads/<filename>")
 def uploaded_file(filename):
+
     return send_file(
         os.path.join(
             app.config["UPLOAD_FOLDER"],
@@ -90,9 +99,10 @@ def uploaded_file(filename):
     )
 
 
-# Download PDF Report
+# Download ATS Report
 @app.route("/download/<filename>")
 def download(filename):
+
     return send_file(
         os.path.join(
             app.config["UPLOAD_FOLDER"],
