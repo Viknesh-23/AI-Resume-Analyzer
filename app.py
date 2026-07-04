@@ -1,8 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 import os
 
 from utils.pdf_reader import extract_text
 from utils.ats import calculate_ats_score
+from utils.pdf_report import create_pdf_report
 
 app = Flask(__name__)
 
@@ -50,11 +51,36 @@ def upload():
         job_description
     )
 
+    # Generate PDF Report
+    report_path = os.path.join(
+        app.config["UPLOAD_FOLDER"],
+        "ATS_Report.pdf"
+    )
+
+    create_pdf_report(
+        report_path,
+        score,
+        matched,
+        missing
+    )
+
     return render_template(
         "result.html",
         score=score,
         matched=sorted(matched),
-        missing=sorted(missing)
+        missing=sorted(missing),
+        report_path="ATS_Report.pdf"
+    )
+
+
+@app.route("/download/<filename>")
+def download(filename):
+    return send_file(
+        os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            filename
+        ),
+        as_attachment=True
     )
 
 
