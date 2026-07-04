@@ -74,10 +74,23 @@ def upload():
         matched=sorted(matched),
         missing=sorted(missing),
         suggestions=suggestions,
-        report_path="ATS_Report.pdf"
+        report_path="ATS_Report.pdf",
+        resume_file=resume.filename
     )
 
 
+# Resume Preview Route
+@app.route("/uploads/<filename>")
+def uploaded_file(filename):
+    return send_file(
+        os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            filename
+        )
+    )
+
+
+# Download PDF Report
 @app.route("/download/<filename>")
 def download(filename):
     return send_file(
